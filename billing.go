@@ -1,5 +1,10 @@
 package main
 
+import (
+	"github.com/jinzhu/gorm"
+	"net/http"
+	"encoding/json"
+)
 
 type BillPeriod struct {
 	FromDate string `json:"from_date"`		// From Date
@@ -24,8 +29,8 @@ type Variable struct {
 
 type Bill struct {
 
-	RRNum 				string 		`json:"rr_num"`					// Revenue Registration Number ( Unique ID )
-	AccountID 			string 		`json:"account_id"`				// Account ID
+	RRNum 				string 		`gorm:"primary_key" json:"rr_num"`					// Revenue Registration Number ( Unique ID )
+	AccountID 			uint 		`gorm:"unique" json:"account_id"`				// Account ID
 	MtrReadCode 		string 		`json:"mtr_read_code"`			// Meter Read Code
 	Name 				string 		`json:"name"`					// Name of Register User
 	Address 			string 		`json:"address"`				// Address of User
@@ -34,7 +39,7 @@ type Bill struct {
 	BillingPeriod 		BillPeriod 	`json:"billing_period"`			// Billing Period From - To
 	ReadingDate 		string 		`json:"reading_date"`			// Reading Date
 	BillNum 			string 		`json:"bill_num"`				// Bill Number
-	MeterSLNum 			string 		`json:"meter_sl_num"`			// Meter Serial Number
+	MeterSLNum 			uint 		`json:"meter_sl_num"`			// Meter Serial Number
 	PresentRead 		string 		`json:"present_read"`			// Present Load
 	PreviousRead 		string 		`json:"previous_read"`			// Previous Load
 	Constant 			string 		`json:"constant"`				// Constant
@@ -56,5 +61,39 @@ type Bill struct {
 	GovSubsidy 			string 		`json:"gov_subsidy"`			// Government Subsidy
 	NetAmtDue 			string 		`json:"net_amt_due"`			// Net Amount to be Paid
 	DueDate 			string 		`json:"due_date"`				// Due Date
+}
+
+type MeterResponse struct {
+	RRNum     string 	`json:"rr_num"`	// RR Number
+}
+
+
+func CreateBill(w http.ResponseWriter, r *http.Request) {
+	var meterresponse MeterResponse
+	var bill Bill
+	var findbill Bill
+	var user Users
+	var kwhupdate KWHUpdate
+	json.NewDecoder(r.Body).Decode(&meterresponse)
+	db,err := gorm.Open("mysql", "akshay:deepika019@/project2018")
+	if err!= nil {
+		panic(err.Error())
+	}
+	defer db.Close()
+	db.AutoMigrate(&Bill{})
+	Showlog(w,r)
+	db.Where(&KWHUpdate{RRNum:meterresponse.RRNum}).First(&kwhupdate)
+	db.Where(&Users{RRNum:meterresponse.RRNum}).First(&user)
+	// create bill
+	bill = Bill{RRNum:kwhupdate.RRNum, AccountID:user.ID, Name:user.Name, Address:user.Address, Consumption:kwhupdate.KWH, MeterSLNum:user.MeterNo, SanctLoad:user.SanctLoad, Tariff:user.Tariff}
+
+	db.Where(&Bill{RRNum:meterresponse.RRNum}).First(&findbill)
+	 if findbill.RRNum != kwhupdate.RRNum {
+		db.Create(&bill)
+	 } else {
+		 db.Model(&bill).Update("consumption", kwhupdate.KWH)
+	 }
 
 }
+
+
