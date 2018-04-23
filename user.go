@@ -13,7 +13,7 @@ import (
 
 
 type Users struct {
-	ID 		  uint		`gorm:"primary_key" json:"id"` 		// Aadhar ID
+	ID 		  uint		`gorm:"primary_key" json:"id"` 		// Aadhar ID = Account ID
 	Name      string 	`gorm:"type:varchar(50)" json:"name"`	// Name
 	Address   string 	`gorm:"type:varchar(100)" json:"address"`	// Address
 	Phone 	  uint 		`gorm:"not null" json:"phone"`			// Phone No

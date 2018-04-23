@@ -16,8 +16,10 @@ func FuncHandler()  {
 	router.HandleFunc("/data", GetMeterData).Methods("GET")
 	router.HandleFunc("/meterdata", PostMeterData).Methods("POST")
 
-	// Login
+	// Billing Information
 	router.HandleFunc("/createbill", CreateBill).Methods("PUT")
+
+	// Login
 	router.HandleFunc("/newuser", Createuser).Methods("POST")
 	router.HandleFunc("/login", Getuser).Methods("PUT")
 	router.HandleFunc("/user/{id}", Senduser).Methods("GET")

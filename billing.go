@@ -28,7 +28,6 @@ type Variable struct {
 
 
 type Bill struct {
-
 	RRNum 				string 		`gorm:"primary_key" json:"rr_num"`					// Revenue Registration Number ( Unique ID )
 	AccountID 			uint 		`gorm:"unique" json:"account_id"`				// Account ID
 	MtrReadCode 		string 		`json:"mtr_read_code"`			// Meter Read Code
