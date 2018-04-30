@@ -1,0 +1,33 @@
+{
+	"comment": "",
+	"ignore": "test",
+	"package": [
+		{
+			"path": "appengine/cloudsql",
+			"revision": ""
+		},
+		{
+			"path": "github.com/gorilla/mux",
+			"revision": ""
+		},
+		{
+			"path": "github.com/jinzhu/gorm",
+			"revision": ""
+		},
+		{
+			"path": "github.com/jinzhu/gorm/dialects/mysql",
+			"revision": ""
+		},
+		{
+			"checksumSHA1": "LiyXfqOzaeQ8vgYZH3t2hUEdVTw=",
+			"path": "google.golang.org/appengine/cloudsql",
+			"revision": "962cbd1200af94a5a35ba8d512e9f91271b4d01a",
+			"revisionTime": "2018-04-27T17:34:10Z"
+		},
+		{
+			"path": "sync",
+			"revision": ""
+		}
+	],
+	"rootPath": "github.com/Sudarshan189/project2018"
+}
