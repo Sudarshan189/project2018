@@ -7,6 +7,7 @@ type StatusMsg struct {
 
 var (
 	DatabaseError = StatusMsg{0, "Can't connect to database"}
+	EmailSent= StatusMsg{8, "Email Sent Successfully" }
 	CreatedSuccess = StatusMsg{1, "creation successful"}
 	CreatedFailed = StatusMsg{2, "failed to create"}
 	LoggedInSuccess= StatusMsg{3, "successfully logged in"}

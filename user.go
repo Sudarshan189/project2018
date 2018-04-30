@@ -16,7 +16,7 @@ type Users struct {
 	ID 		  uint		`gorm:"primary_key" json:"id"` 		// Aadhar ID = Account ID
 	Name      string 	`gorm:"type:varchar(50)" json:"name"`	// Name
 	Address   string 	`gorm:"type:varchar(100)" json:"address"`	// Address
-	Phone 	  uint 		`gorm:"not null" json:"phone"`			// Phone No
+	Phone 	  uint 		`gorm:"not null type:bigint(20)" json:"phone"`			// Phone No
 	Email 	  string 	`gorm:"type:varchar(50); not null" json:"email"`	// Eemail
 	RRNum     string 	`gorm:"type:varchar(20);unique;not null" json:"rr_num"`	// RR Number
 	MeterNo   uint 		`gorm:"unique;not null" json:"meter_no"`	// Meter Num
