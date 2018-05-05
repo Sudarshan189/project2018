@@ -1,22 +1,20 @@
 package main
 
 import (
-	"net/http"
 	"encoding/json"
+	"net/http"
 	"strconv"
-
 )
 
 type MeterBillReading struct {
-	RRNum 		 string  `json:"rr_num"`				// Revenue Registration Number ( Unique ID )
+	RRNum string `json:"rr_num"` // Revenue Registration Number ( Unique ID )
 	// PresentRead  string  `json:"present_read"`			// Present Load
 	// PowerFactor  string  `json:"power_factor"`			// Power Factor
+
 }
 
-
-
 type Meter struct {
-	RRNum 		 string  `json:"meter_data,omitempty"`
+	RRNum        string  `json:"meter_data,omitempty"`
 	CurrentValue float32 `json:"current_value,omitempty"`
 	VoltageValue float32 `json:"voltage_value,omitempty"`
 }
@@ -27,23 +25,18 @@ type MeterString struct {
 	VoltageValue string `json:"voltage_value,omitempty"`
 }
 
-
 var meterstring MeterString
 var meter Meter
 
-
-
-
-func GetMeterData(w http.ResponseWriter, r *http.Request) {  // optional
+func GetMeterData(w http.ResponseWriter, r *http.Request) { // optional
 
 	// standard header set by browser...
-	w.Header().Set("Content-Type","application/json")
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(meter)
-	Showlog(w,r)
+	Showlog(w, r)
 
 }
-
 
 func PostMeterData(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewDecoder(r.Body).Decode(&meterstring)
@@ -61,8 +54,8 @@ func PostMeterData(w http.ResponseWriter, r *http.Request) {
 	voltage := float32(vol)
 
 	meter = Meter{meterstring.RRNum, current, voltage}
-	w.Header().Set("Content-Type","application/json")
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusAccepted)
 	json.NewEncoder(w).Encode(meter)
-	Showlog(w,r)
+	Showlog(w, r)
 }

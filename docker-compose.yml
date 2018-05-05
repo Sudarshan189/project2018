@@ -1,0 +1,13 @@
+version: "2"
+services:
+    db:
+        container_name: db-session
+        image: mysql
+        environment:
+            - MYSQL_DATABASE=project2018
+            - MYSQL_ROOT_PASSWORD=project2018
+            - MYSQL_USER=session
+            - MYSQL_PASSWORD=session
+            - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+        ports:
+            - "3306:3306"

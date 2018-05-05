@@ -1,18 +1,17 @@
 package main
 
 import (
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
+
+	//"github.com/gorilla/handlers"
+	"github.com/gorilla/handlers"
+	"github.com/gorilla/mux"
 )
 
-
-
-
-func FuncHandler()  {
+func FuncHandler() {
 	router := mux.NewRouter()
 
-	//router.HandleFunc("/me/{name}", MyData).Methods("GET")
 	router.HandleFunc("/data", GetMeterData).Methods("GET")
 	router.HandleFunc("/meterdata", PostMeterData).Methods("POST")
 
@@ -32,20 +31,20 @@ func FuncHandler()  {
 	router.HandleFunc("/sendmessage/{id}", SendMessage).Methods("GET")
 
 	log.Printf("Serving on :8080, Go to localhost:8080")
-	log.Fatal(http.ListenAndServe(":8080", router))
+	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization", "Access-Control-Request-Headers", "Access-Control-Request-Method"}), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}), handlers.AllowedOrigins([]string{"*"}))(router)))
+	//allowedMethods := []string{"POST", "PUT", "OPTIONS", "GET"}
+	//allowedOrigin := []string{"*"}
+	//allowedHeader := []string{"Access-Control-Allow-Origin"}
+	//log.Fatal(http.ListenAndServe(":8080",
+	//	handlers.CORS(handlers.AllowedHeaders(allowedHeader),
+	//		handlers.AllowedOrigins(allowedOrigin),
+	//		handlers.AllowedMethods(allowedMethods))(router)),
+	//)
+
 }
-
-
-
-
-
 
 func main() {
 	go ArduinoServer()
 	FuncHandler()
+
 }
-
-
-
-
-
