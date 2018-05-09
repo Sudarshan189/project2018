@@ -2,8 +2,6 @@ package main
 
 import (
 	"net/http"
-	"strconv"
-
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
 )
@@ -23,6 +21,17 @@ type BilledData struct {
 	Restall uint32
 }
 
+
+/*
+Example value
+{
+	"rr_num":"1gsh33",
+	"current":829,
+	"voltage":230,
+	"power":665
+}
+*/
+
 func CreateBillInfo(w http.ResponseWriter, r *http.Request) {
 	var data KWHUpdate
 	var bill Bill
@@ -36,11 +45,12 @@ func CreateBillInfo(w http.ResponseWriter, r *http.Request) {
 	rrnum := vars["rr_num"]
 
 	db.Where(&KWHUpdate{RRNum: rrnum}).First(&data)
-	kwdata, err := strconv.ParseFloat(data.KWH, 10) // base 10 system 64 bit
-	if err != nil {
-		panic(err.Error())
-	}
-
+	kwdata := data.KWH
+	//kwdata, err := strconv.ParseFloat(data.KWH, 10) // base 10 system 64 bit
+	//if err != nil {
+	//	panic(err.Error())
+	//}
+// kwdata := data.KWH
 	var billeddata BilledData
 	if kwdata > 0 {
 		billeddata.First = 40

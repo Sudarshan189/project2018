@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 
 	"github.com/jinzhu/gorm"
+	"strconv"
 )
 
 type BillPeriod struct {
@@ -83,7 +84,8 @@ func CreateBill(w http.ResponseWriter, r *http.Request) {
 	db.Where(&KWHUpdate{RRNum: meterresponse.RRNum}).First(&kwhupdate)
 	db.Where(&Users{RRNum: meterresponse.RRNum}).First(&user)
 	// create bill
-	bill = Bill{RRNum: kwhupdate.RRNum, AccountID: user.ID, Name: user.Name, Address: user.Address, Consumption: kwhupdate.KWH, MeterSLNum: user.MeterNo, SanctLoad: user.SanctLoad, Tariff: user.Tariff}
+	data:= strconv.FormatFloat(kwhupdate.KWH,'f', 2,64)
+	bill = Bill{RRNum: kwhupdate.RRNum, AccountID: user.ID, Name: user.Name, Address: user.Address, Consumption: data, MeterSLNum: user.MeterNo, SanctLoad: user.SanctLoad, Tariff: user.Tariff}
 
 	db.Where(&Bill{RRNum: meterresponse.RRNum}).First(&findbill)
 	if findbill.RRNum != kwhupdate.RRNum {

@@ -38,14 +38,14 @@ var login Login
 func Createuser(w http.ResponseWriter, r *http.Request) {
 	var user Users
 	_ = json.NewDecoder(r.Body).Decode(&user)
-	//db, err := gorm.Open("mysql", "session:session@/project2018")
-	//if err != nil {
-	//	json.NewEncoder(w).Encode(DatabaseError)
-	//	panic(err.Error())
-	//}
-	// defer db.Close()
-	Db.AutoMigrate(&Users{}) // migrates the table
-	Db.Create(&user)
+	db, err := gorm.Open("mysql", "session:session@/project2018")
+	if err != nil {
+		json.NewEncoder(w).Encode(DatabaseError)
+		panic(err.Error())
+	}
+	defer db.Close()
+	db.AutoMigrate(&Users{}) // migrates the table
+	db.Create(&user)
 	Showlog(w,r)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
