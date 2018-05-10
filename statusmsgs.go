@@ -15,5 +15,6 @@ var (
 	DatabaseRetriveError= StatusMsg{5, "cannot retrive data"}
 	WrongPassword= StatusMsg{6, "Old password do not match"}
 	PasswordChanged= StatusMsg{7, "Password Changed Successfully"}
+	EMailFailed = StatusMsg{9, "Email sending failed"}
 )
 

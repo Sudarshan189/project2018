@@ -1,15 +1,20 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
+
 	"net/http"
 	"net/smtp"
 	"strconv"
+	"encoding/json"
 
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
+	"fmt"
 )
+
+
+
+var newdata KWHUpdate
 
 func EmailService(w http.ResponseWriter, r *http.Request) {
 
@@ -36,19 +41,36 @@ func EmailService(w http.ResponseWriter, r *http.Request) {
 
 	db.Where(&Users{ID: uint64(iddata)}).First(&data)
 
+	db.Where(&KWHUpdate{RRNum: data.RRNum}).First(&newdata)
+	// fmt.Println(newdata)
+
 	emailAuth := smtp.PlainAuth("", emailSender, passWord, hostUrl)
+
+	// mydata = strconv.FormatFloat(newdata.KWH*5, 'f', 2, 64)
+	mydata := strconv.FormatFloat(newdata.KWH*5, 'f', 10, 64)
+	// phonedata := strconv.FormatUint(data.Phone, 64)
 
 	msg := []byte("To:" + data.Email + "\r\n" +
 		"Subject: BESCOM Electricity Bill \r\n" +
 		"\r\n" +
-		"saj" + "\r\n")
+		 "RR Num: "+data.RRNum + "\r\n" + "Name: "+data.Name+ "\r\n"+ "Address: "+data.Address + "\r\n" +"Email: "+data.Email + "\r\n"+ "\r\n"+"Bill Amount: "+mydata + "\r\n")
 
-	err1 := smtp.SendMail(hostUrl+":"+hostPort, emailAuth, emailSender, []string{data.Email}, msg)
+	 fmt.Println(newdata.KWH)
+
+
+
+	// fmt.Println(mydata)
+
+	 err1 := smtp.SendMail(hostUrl+":"+hostPort, emailAuth, emailSender, []string{data.Email}, msg)
 
 	if err1 != nil {
-		fmt.Print("Error")
+		//fmt.Print("Error")
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(EMailFailed)
+	} else {
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(EmailSent)
 	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(EmailSent)
+
 
 }

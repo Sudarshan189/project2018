@@ -2,8 +2,11 @@ package main
 
 import (
 	"net/http"
+
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
+	"encoding/json"
+	"fmt"
 )
 
 var (
@@ -19,6 +22,12 @@ var (
 type BilledData struct {
 	First   uint32
 	Restall uint32
+}
+
+
+type Cost struct {
+	RRnum string `json:"r_rnum"`
+	Totalcost float64 `json:"totalcost, omitempty"`
 }
 
 
@@ -51,6 +60,8 @@ func CreateBillInfo(w http.ResponseWriter, r *http.Request) {
 	//	panic(err.Error())
 	//}
 // kwdata := data.KWH
+
+
 	var billeddata BilledData
 	if kwdata > 0 {
 		billeddata.First = 40
@@ -64,6 +75,14 @@ func CreateBillInfo(w http.ResponseWriter, r *http.Request) {
 		}
 		bill.FixedCharges.EveryAddKW = string(billeddata.Restall)
 	}
+
+
+	totalcost := Cost{RRnum: data.RRNum, Totalcost:(kwdata*5)}
+
+	w.Header().Set("Content-Type", "application/json")
+	fmt.Print(totalcost)
+	json.NewEncoder(w).Encode(totalcost)
+
 
 	/*
 	DC amps to kilowatts calculation formula

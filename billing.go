@@ -1,11 +1,11 @@
 package main
 
 import (
-	"net/http"
 	"encoding/json"
+	"net/http"
+	"strconv"
 
 	"github.com/jinzhu/gorm"
-	"strconv"
 )
 
 type BillPeriod struct {
@@ -30,7 +30,7 @@ type Variable struct {
 
 type Bill struct {
 	RRNum             string     `gorm:"primary_key" json:"rr_num"` // Revenue Registration Number ( Unique ID )
-	AccountID         uint64       `gorm:"unique" json:"account_id"`  // Account ID
+	AccountID         uint64     `gorm:"unique" json:"account_id"`  // Account ID
 	MtrReadCode       string     `json:"mtr_read_code"`             // Meter Read Code
 	Name              string     `json:"name"`                      // Name of Register User
 	Address           string     `json:"address"`                   // Address of User
@@ -39,7 +39,7 @@ type Bill struct {
 	BillingPeriod     BillPeriod `json:"billing_period"`            // Billing Period From - To
 	ReadingDate       string     `json:"reading_date"`              // Reading Date
 	BillNum           string     `json:"bill_num"`                  // Bill Number
-	MeterSLNum        uint64       `json:"meter_sl_num"`              // Meter Serial Number
+	MeterSLNum        uint64     `json:"meter_sl_num"`              // Meter Serial Number
 	PresentRead       string     `json:"present_read"`              // Present Load
 	PreviousRead      string     `json:"previous_read"`             // Previous Load
 	Constant          string     `json:"constant"`                  // Constant
@@ -84,7 +84,7 @@ func CreateBill(w http.ResponseWriter, r *http.Request) {
 	db.Where(&KWHUpdate{RRNum: meterresponse.RRNum}).First(&kwhupdate)
 	db.Where(&Users{RRNum: meterresponse.RRNum}).First(&user)
 	// create bill
-	data:= strconv.FormatFloat(kwhupdate.KWH,'f', 2,64)
+	data := strconv.FormatFloat(kwhupdate.KWH, 'f', 2, 64)
 	bill = Bill{RRNum: kwhupdate.RRNum, AccountID: user.ID, Name: user.Name, Address: user.Address, Consumption: data, MeterSLNum: user.MeterNo, SanctLoad: user.SanctLoad, Tariff: user.Tariff}
 
 	db.Where(&Bill{RRNum: meterresponse.RRNum}).First(&findbill)
