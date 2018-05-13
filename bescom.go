@@ -3,13 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
+
 	"github.com/gorilla/mux"
 	"github.com/jinzhu/gorm"
-	"net/http"
 )
 
-
-var me string
 var meterstring KWHUpdate
 
 func GetMeterData(w http.ResponseWriter, r *http.Request) {
@@ -21,14 +20,8 @@ func GetMeterData(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 	vars := mux.Vars(r)
 	rrnum := vars["rr_num"]
-
-	// db.Where(&KWHUpdate{RRNum: rrnum}).First(&meterstring)
-	db.Where(&KWHUpdate{RRNum:rrnum}).First(&meterstring)
-
+	db.Where(&KWHUpdate{RRNum: rrnum}).First(&meterstring)
 	fmt.Println(meterstring)
-
-	//meterstring.UpdatedAt = meterstring.UpdatedAt
-	// standard header set by browser...
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(meterstring)

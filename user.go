@@ -33,7 +33,9 @@ type ChangePassword struct {
 	NewPass string `json:"new_pass"`
 }
 
-var login Login
+var (
+	login Login
+)
 
 func Createuser(w http.ResponseWriter, r *http.Request) {
 	var user Users
@@ -63,14 +65,12 @@ func Getuser(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 	Showlog(w, r)
 	db.Where(&Users{ID: login.ID, Password: login.Password}).First(&user)
-
 	w.Header().Set("Content-Type", "application/json")
 	if user.ID != 0 {
 		json.NewEncoder(w).Encode(LoggedInSuccess)
 	} else {
 		json.NewEncoder(w).Encode(LoggedInFail)
 	}
-
 }
 
 func Senduser(w http.ResponseWriter, r *http.Request) {
@@ -109,7 +109,6 @@ func Changepassword(w http.ResponseWriter, r *http.Request) {
 		panic(err.Error())
 	}
 	defer db.Close()
-
 	vars := mux.Vars(r)
 	email := vars["email"]
 	id := vars["id"]
@@ -117,7 +116,6 @@ func Changepassword(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err.Error())
 	}
-
 	_ = json.NewDecoder(r.Body).Decode(&pass)
 	db.Where(&Users{Email: email, ID: uint64(newid)}).First(&user)
 	if user.Password != pass.OldPass {

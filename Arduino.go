@@ -10,13 +10,18 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+/*
+	Now we need to calculate kw in kwh..
+	This need small calculation.
+	if server is updating per 0.5 Sec then divide it with 3600 to conver it in kWh
+*/
+
 type Mymeter struct {
 	RRNum   string `json:"rr_num"`
 	Current string `json:"current"`
 	Voltage string `json:"voltage"`
 	KWH     string `json:"kwh"`
 }
-
 type KWHUpdate struct {
 	RRNum     string     `gorm:"primary_key" json:"rr_num"` // Revenue Registration Number ( Unique ID )
 	Current   string     `gorm:"varchar(30)" json:"current"`
@@ -24,7 +29,6 @@ type KWHUpdate struct {
 	KWH       float64    `json:"kwh"` // Consumption ( Present - Previous )
 	UpdatedAt *time.Time `json:"updated_at"`
 }
-
 
 func ArduinoServer() {
 	var meter Mymeter
@@ -38,7 +42,6 @@ func ArduinoServer() {
 	}
 	defer db.Close()
 	db.AutoMigrate(&KWHUpdate{})
-
 	for {
 		_ = json.NewDecoder(conn).Decode(&meter) // KWH to 0 for error removal
 		newmeter = KWHUpdate{RRNum: meter.RRNum, KWH: 0, Current: meter.Current, Voltage: "229.9"}
@@ -48,56 +51,22 @@ func ArduinoServer() {
 			db.Create(&newmeter)
 			finddata = newmeter
 		} else {
-
-
-
-			//// Algorithm to calculate power in kWH
 			cur, err := strconv.ParseFloat(finddata.Current, 10) // base 10 system 64 bit
-			// Current in Amps
 			if err != nil {
 				panic(err.Error())
 			}
-
 			vol, err := strconv.ParseFloat(finddata.Voltage, 10) // base 10 system 64 bit
-			// Voltage in Volts
 			if err != nil {
 				panic(err.Error())
 			}
-
 			if cur >= 3 {
 				cur = 0
 			}
-			power := (cur * vol) / 1000 // Power is Voltage times Current in kW
-
-
-			/*
-			Now we need to calculate kw in kwh..
-			This need small calculation.
-			if server is updating per 0.5 Sec then divide it with 3600 to conver it in kWh
-		*/
-		    // divide = 2/3600
-			kWh := (power*2)/3600
-			//
-			// //finddata.KWH = strconv.FormatFloat(kWh, 'f', 2, 64)
-			//
+			power := (cur * vol) / 1000
+			kWh := (power * 2) / 3600
 			kwdata := finddata.KWH
-
-			//
 			finddata.KWH = kwdata + kWh
-
-
-			//finddata.KWH = strconv.FormatFloat(kwdata + kWh, 'f', 2, 64)
-			// add kWh data to previous value
-			//
-			// fmt.Println(finddata.KWH)
-			//
-			//
 			db.Model(&finddata).Updates(KWHUpdate{KWH: finddata.KWH, Current: newmeter.Current, Voltage: newmeter.Voltage})
-
-			// db.Model(&finddata).Updates(KWHUpdate{})
-			//fmt.Print(finddata.KWH)
-			//
-			// _ = json.NewEncoder(conn).Encode(&finddata.KWH)
 			fmt.Println(finddata)
 		}
 	}

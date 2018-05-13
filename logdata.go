@@ -1,19 +1,17 @@
 package main
 
 import (
-	"net/http"
 	"log"
+	"net/http"
 )
 
 var (
-	proto =""
-	requestURI=""
-	method=""
+	proto      = ""
+	requestURI = ""
+	method     = ""
 )
 
-
 func Showlog(w http.ResponseWriter, r *http.Request) {
-
 	proto, requestURI, method = r.Proto, r.RequestURI, r.Method
 	log.Println(proto, requestURI, method)
 }
