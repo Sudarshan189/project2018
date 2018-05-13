@@ -16,5 +16,9 @@ var (
 	WrongPassword= StatusMsg{6, "Old password do not match"}
 	PasswordChanged= StatusMsg{7, "Password Changed Successfully"}
 	EMailFailed = StatusMsg{9, "Email sending failed"}
+	MessageSent = StatusMsg{10, "Message sending Completed"}
+	PaidSuccess = StatusMsg{11, "Money has been paid"}
+	UnpaidSuccess = StatusMsg{12, "Payment Revoked"}
+	Billgenerated = StatusMsg{13, "Bill generated Successfully"}
 )
 

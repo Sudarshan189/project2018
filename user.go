@@ -11,20 +11,20 @@ import (
 )
 
 type Users struct {
-	ID        uint64   `gorm:"primary_key" json:"id"`                          // Aadhar ID = Account ID
+	ID        uint64 `gorm:"primary_key" json:"id"`                          // Aadhar ID = Account ID
 	Name      string `gorm:"type:varchar(50)" json:"name"`                   // Name
 	Address   string `gorm:"type:varchar(100)" json:"address"`               // Address
-	Phone     uint64   `gorm:"not null type:bigint(20)" json:"phone"`          // Phone No
+	Phone     uint64 `gorm:"not null type:bigint(20)" json:"phone"`          // Phone No
 	Email     string `gorm:"type:varchar(50); not null" json:"email"`        // Eemail
 	RRNum     string `gorm:"type:varchar(20);unique;not null" json:"rr_num"` // RR Number
-	MeterNo   uint64   `gorm:"unique;not null" json:"meter_no"`                // Meter Num
+	MeterNo   uint64 `gorm:"unique;not null" json:"meter_no"`                // Meter Num
 	Tariff    string `json:"tariff"`                                         // Tarif plan
 	SanctLoad string `json:"sanct_load"`                                     // Sanctioned Laod
 	Password  string `gorm:"not null" json:"password"`                       // Password
 }
 
 type Login struct {
-	ID       uint64   `json:"id"`
+	ID       uint64 `json:"id"`
 	Password string `json:"password"`
 }
 
@@ -46,7 +46,7 @@ func Createuser(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 	db.AutoMigrate(&Users{}) // migrates the table
 	db.Create(&user)
-	Showlog(w,r)
+	Showlog(w, r)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(CreatedSuccess)
@@ -103,7 +103,7 @@ func Senduser(w http.ResponseWriter, r *http.Request) {
 func Changepassword(w http.ResponseWriter, r *http.Request) {
 	var pass ChangePassword
 	var user Users
-	db, err := gorm.Open("mysql", "akshay:deepika019@/project2018")
+	db, err := gorm.Open("mysql", "session:session@/project2018")
 	if err != nil {
 		json.NewEncoder(w).Encode(DatabaseError)
 		panic(err.Error())

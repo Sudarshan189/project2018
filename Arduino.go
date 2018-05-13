@@ -64,7 +64,9 @@ func ArduinoServer() {
 				panic(err.Error())
 			}
 
-
+			if cur >= 3 {
+				cur = 0
+			}
 			power := (cur * vol) / 1000 // Power is Voltage times Current in kW
 
 

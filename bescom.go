@@ -8,14 +8,6 @@ import (
 	"net/http"
 )
 
-type KWH struct {
-	RRNum     string  `json:"rr_num"` 		// Revenue Registration Number ( Unique ID )
-	Current   string  `json:"current"`
-	Voltage   string  `json:"voltage"`
-	KWH       float64 `json:"kwh"` 			// Consumption ( Present - Previous )
-	UpdatedAt string  `json:"updated_at"`
-}
-
 
 var me string
 var meterstring KWHUpdate
