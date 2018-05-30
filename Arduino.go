@@ -31,6 +31,7 @@ type KWHUpdate struct {
 }
 
 func ArduinoServer() {
+	var found []Socket
 	var meter Mymeter
 	var newmeter KWHUpdate
 	var finddata KWHUpdate
@@ -59,8 +60,19 @@ func ArduinoServer() {
 			if err != nil {
 				panic(err.Error())
 			}
-			if cur >= 3 {
+			if cur > 4 {
 				cur = 0
+			}
+			if cur > 8 {
+				//db.Model(&finddata).Updates(KWHUpdate{KWH: finddata.KWH, Current: newmeter.Current, Voltage: newmeter.Voltage})
+				SendLoadMsg(newmeter.RRNum)
+				db.Where(&Socket{RRNum:newmeter.RRNum}).Find(&found)
+				db.Model(&found[0]).Update("limit", "1")
+				db.Model(&found[1]).Update("limit", "1")
+			} else {
+				db.Where(&Socket{RRNum:newmeter.RRNum}).Find(&found)
+				db.Model(&found[0]).Update("limit", "0")
+				db.Model(&found[1]).Update("limit", "0")
 			}
 			power := (cur * vol) / 1000
 			kWh := (power * 2) / 3600
@@ -71,3 +83,8 @@ func ArduinoServer() {
 		}
 	}
 }
+
+
+
+
+

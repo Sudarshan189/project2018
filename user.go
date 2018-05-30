@@ -82,7 +82,6 @@ func Senduser(w http.ResponseWriter, r *http.Request) {
 		panic(err.Error())
 	}
 	defer db.Close()
-
 	vars := mux.Vars(r)
 	id := vars["id"]
 	newid, err := strconv.ParseUint(id, 10, 64) // base 10 system 64 bit

@@ -77,7 +77,7 @@ func MailtoAll(w http.ResponseWriter, r *http.Request) {
 				subject := "Subject: BESCOM Electricity Bill\n"
 				msg := []byte(subject + mime + "<html><body style=\"border: 2px solid black; margin:8px;\"><div align=\"center\"><img src=" + link + " style=\"width:100px;height:125px;\"></div><div align=\"center\"><h2>Name: " + newbills[i].Name + " </h2><h3>Address: " + newbills[i].Address + "</h3>" +
 					"<h3> Bill Number: " + fmt.Sprint(newbills[i].BillNum) + "</h3><br><h3>Email: " + newbills[i].Email + "</h3>" +
-					"<h3>Phone: " + fmt.Sprint(newbills[i].Phone) + "</h3><br><h3> Bill Amount: " + fmt.Sprint(newbills[i].NetAmtDue) + "</h3><h3> Due Date: " + newbills[i].DueDate + "</h3> <button style=\"background-color: #4CAF50;color: white;padding: 15px 32px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;margin: 4px 2px;cursor: pointer;\"><a style=\"color: white;\" href=\"http://localhost:4200/login\">Pay Bill</a></button></div></body></html>")
+					"<h3>Phone: " + fmt.Sprint(newbills[i].Phone) + "</h3><br><h3> Bill Amount: " + fmt.Sprint(newbills[i].NetAmtDue) + "</h3><h3> Due Date: " + newbills[i].DueDate + "</h3> <button style=\"background-color: #4CAF50;color: white;padding: 15px 32px;text-align: center;text-decoration: none;display: inline-block;font-size: 16px;margin: 4px 2px;cursor: pointer;\"><a style=\"color: white;\" href=\"http://localhost:4200/login\">Click Here</a></button></div></body></html>")
 				err1 := smtp.SendMail(hostUrl+":"+hostPort, emailAuth, emailSender, []string{newbills[i].Email}, msg)
 				if err1 != nil {
 					fmt.Println("Mail failed to " + newbills[i].Email)

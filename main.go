@@ -48,13 +48,19 @@ func FuncHandler() {
 	router.HandleFunc("/paid/{rr_num}/{bill_num}", PaidBill).Methods("GET")
 	router.HandleFunc("/unpaid/{rr_num}/{bill_num}", UnpaidBill).Methods("GET")
 
+	// Smart Socket
+	router.HandleFunc("/smartsoc/{rr_num}/{soc_num}/{sta}", SharpThing).Methods("GET")
+	router.HandleFunc("/getstate/{rr_num}", GetSwitchState).Methods("GET")
+
+
 	log.Printf("Serving on :8080, Go to localhost:8080")
 	log.Fatal(http.ListenAndServe(":8080", handlers.CORS(handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization", "Access-Control-Request-Headers", "Access-Control-Request-Method"}), handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}), handlers.AllowedOrigins([]string{"*"}))(router)))
 
 }
 
 func main() {
-	go ArduinoServer()
-	FuncHandler()
+	 go ArduinoServer()
+	 go SharpSoc()
+	 FuncHandler()
 
 }
